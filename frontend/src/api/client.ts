@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Centralized backend base URL, configured via VITE_API_URL (falls back to relative /api for local dev proxying).
+const API_BASE_URL = `${import.meta.env.VITE_API_URL ?? ''}/api`;
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,7 +27,7 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refresh_token');
       if (refreshToken) {
         try {
-          const res = await axios.post('/api/auth/refresh/', { refresh: refreshToken });
+          const res = await axios.post(`${API_BASE_URL}/auth/refresh/`, { refresh: refreshToken });
           localStorage.setItem('access_token', res.data.access);
           originalRequest.headers.Authorization = `Bearer ${res.data.access}`;
           return api(originalRequest);
