@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Centralized backend base URL, configured via VITE_API_URL (falls back to relative /api for local dev proxying).
-const API_BASE_URL = `${import.meta.env.VITE_API_URL ?? ''}/api`;
+// Trailing slash on the env var is stripped to avoid double slashes like ".com//api".
+const API_BASE_URL = `${(import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
